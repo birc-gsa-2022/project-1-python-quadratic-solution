@@ -16,7 +16,7 @@ def main():
     fastq = p.parseFastq(args.reads)
     for (fastaName, fastaSeq) in fasta:
         for (name,seq) in fastq:
-            for i in kmp(fastaSeq, seq):
+            for i in bmh(fastaSeq, seq):
                 print(name, fastaName, i+1, f'{len(seq)}M', seq, sep="\t")
 
 
