@@ -23,19 +23,17 @@ def main():
 def naive(x, p):
     upperIndex = len(x)-len(p)+1
     for i in range(upperIndex):
-        patternFound = True
         for j, patternchar in enumerate(p):
             if x[i+j] != patternchar:
-                patternFound = False
                 break
-        if patternFound:
+        else:
             yield i
 
 def naive2(x,p):
     m = len(p)
     upperIndex = len(x)-m+1
     for i in range(upperIndex):
-        if x[i:i+m] == p:
+        if x[i:i+m] == p: #python is bail out fast
             yield i
 
 

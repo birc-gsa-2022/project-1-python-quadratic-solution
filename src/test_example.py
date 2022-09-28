@@ -34,6 +34,12 @@ string= "".join(r.choices(genAlphabet, k=1000))
 pat = "".join(r.choices(genAlphabet, k=1))
 nai = [n for n in naive.naive2(string, pat)]
 li = [l for l in lin.kmp(string, pat)]
+
+print("Length nai : " + str(len(nai)))
+print("Length li : " + str(len(li)))
+
+assert len(nai) == len(li)
+
 for i in range(len(nai)):
     assert nai[i] == li[i]
 

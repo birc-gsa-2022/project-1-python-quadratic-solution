@@ -1,6 +1,8 @@
 """Implementation of a linear time exact matching algorithm."""
 
 import argparse
+from typing import Dict
+import parser as p
 
 
 def main():
@@ -9,21 +11,16 @@ def main():
     argparser.add_argument("genome", type=argparse.FileType('r'))
     argparser.add_argument("reads", type=argparse.FileType('r'))
     args = argparser.parse_args()
-    print(f"Find every reads in {args.reads.name} " +
-          f"in genome {args.genome.name}")
+    
+    fasta = p.parseFasta(args.genome)
+    fastq = p.parseFastq(args.reads)
+    for (fastaName, fastaSeq) in fasta:
+        for (name,seq) in fastq:
+            for i in kmp(fastaSeq, seq):
+                print(name, fastaName, i+1, f'{len(seq)}M', seq, sep="\t")
 
 
 def border_array(x: str) -> list[int]:
-    """
-    Construct the border array for x.
-
-    >>> border_array("aaba")
-    [0, 1, 0, 1]
-    >>> border_array("ississippi")
-    [0, 0, 0, 1, 2, 3, 4, 0, 0, 1]
-    >>> border_array("")
-    []
-    """
     ba = []
 
     for i, char in enumerate(x):
@@ -40,33 +37,12 @@ def border_array(x: str) -> list[int]:
     return ba
 
 def strict_border_array(x: str) -> list[int]:
-    """
-    Construct the strict border array for x.
-
-    A struct border array is one where the border cannot
-    match on the next character. If b is the length of the
-    longest border for x[:i+1], it means x[:b] == x[i-b:i+1],
-    but for a strict border, it must be the longest border
-    such that x[b] != x[i+1].
-
-    >>> strict_border_array("aaba")
-    [0, 1, 0, 1]
-    >>> strict_border_array("aaaba")
-    [0, 0, 2, 0, 1]
-    >>> strict_border_array("ississippi")
-    [0, 0, 0, 0, 0, 0, 4, 0, 0, 1]
-    >>> strict_border_array("")
-    []
-    """
     ba = border_array(x)
     for i, bai in enumerate(ba[:-1]):
         if bai != 0 and x[i+1] == x[bai]:
             ba[i]= ba[bai-1]  
     return ba
 
-#Not working
-#TODO make not go trough when pattern is bigger 
-#FIXME fix when m=1 
 def kmp(x, p):
     ba = strict_border_array(p)
     m = len(p)
@@ -74,10 +50,13 @@ def kmp(x, p):
     i = 0
     j = 0
     while j < n:
+
         if x[j] == p[i]:
             if i==m-1:
-                i = max(0, ba[i-1]) #Technically not needed? 
-                yield j-i
+                if i==0:
+                    j += 1
+                i = ba[i-1]
+                yield j-m
             else:
                 j += 1
                 i += 1
@@ -86,8 +65,29 @@ def kmp(x, p):
         else:
             i = ba[i-1]
             
+def make_jump_table(p):
+    jump_table = dict()
+    m = len(p)
+    # Only makes entry for letter there is in p
+    for i in range(len(p)-1):
+        jump_table[p[i]] = m - i - 1
+    return jump_table
 
+def bmh(x, p):
+    n = len(x)
+    m = len(p)
+    jump_table = make_jump_table(p)
+    j = 0
 
+    while j < n - m + 1:
+        i = m - 1 # strings index's starts at 0
+        while 0 <= i and p[i] == x[j + i]:
+            i -= 1
+        
+        if i == -1:
+            yield j
+        
+        j += jump_table.get(x[j+m-1], m)
 
 if __name__ == '__main__':
     main()
