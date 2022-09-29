@@ -1,7 +1,6 @@
 """Implementation of a linear time exact matching algorithm."""
 
 import argparse
-from typing import Dict
 import parser as p
 
 
@@ -16,7 +15,7 @@ def main():
     fastq = p.parseFastq(args.reads)
     for (fastaName, fastaSeq) in fasta:
         for (name,seq) in fastq:
-            for i in kmp(fastaSeq, seq):
+            for i in kmp2(fastaSeq, seq):
                 print(name, fastaName, i+1, f'{len(seq)}M', seq, sep="\t")
 
 
@@ -36,8 +35,9 @@ def border_array(x: str) -> list[int]:
             j = baPrev 
     return ba
 
-def strict_border_array(x: str) -> list[int]:
-    ba = border_array(x)
+def strict_border_array(x: str, ba=None) -> list[int]:
+    if ba is None:
+        ba = border_array(x)
     for i, bai in enumerate(ba[:-1]):
         if bai != 0 and x[i+1] == x[bai]:
             ba[i]= ba[bai-1]  
@@ -47,19 +47,16 @@ def kmp(x, p):
     if not x or not p:
         return 
     ba = border_array(p)
-    bax = strict_border_array(p)
+    bax = strict_border_array(p, ba.copy())
     m = len(p)
     n = len(x)
     i = 0
     j = 0
     while j < n:
-
         if x[j] == p[i]:
-            if m == 1:
-                yield j
-                j += 1
-            elif i==m-1:
+            if i==m-1:
                 yield j-i
+                j += (i == 0)
                 i = ba[i-1]
             else:
                 j += 1
@@ -68,7 +65,30 @@ def kmp(x, p):
             j += 1
         else:
             i = bax[i-1]
-            
+
+def kmp2(x, p):
+    if not x or not p:
+        return 
+    bax = strict_border_array(p)
+    m = len(p)
+    n = len(x)
+    j = 0
+
+    matchLen = 0
+    while j <= n-(m-matchLen):
+        for i in range(matchLen, m):
+            if x[j] == p[i]:
+                matchLen += 1
+                j +=1 
+            else:
+                break
+        else:
+            yield j-matchLen
+        if matchLen == 0:
+            j += 1
+        else:
+            matchLen = bax[matchLen-1]
+
 def make_jump_table(p):
     jump_table = dict()
     m = len(p)
