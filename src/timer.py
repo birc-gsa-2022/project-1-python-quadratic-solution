@@ -4,7 +4,7 @@ class Clock:
     def init(self):
         pass
 
-    def timeAlgorithm(self, algorithm, *args):
+    def getTime(self, algorithm, *args):
         starttime = time.perf_counter()
         algorithm(*args)
         endtime = time.perf_counter()
@@ -22,5 +22,5 @@ class Clock:
     def getAverageTime(self, iterations, algorithm, *args):
         total = 0.0
         for _ in range(iterations):
-            total += self.timeAlgorithm(algorithm, *args)
+            total += self.getTime(algorithm, *args)
         return total/float(iterations)

@@ -84,28 +84,40 @@ Once you have implemented the tools, fill out the report below.
 
 ### Insights you may have had while implementing and comparing the algorithms.
 
-*Describe this here.*
+There are many ways to archive the same thing but not every method is equally elegant. 
 
 ### Problems encountered if any.
 
-*Describe this here.*
+* Plotting resonable data can be very hard. Mainly making the plots readable so a conclusion can be made from them is difficult.
+* Indices can also be difficult.
 
 ### Experiments that verifies the correctness of your implementations.
 
-*Describe this here.*
+We have made testing with some examples were we knew the correct answer and checked that the algorithm gave the same answer as we expected.
+
+
+After being confident in that the naive algorithm as correct we also ran alot of examples with randomly generated data and compared the output given by different algorithms to make sure they all gave the same answer to the same input.
 
 ### Experiments validating the running time.
 
 For this section, you should address the following:
 
 * An experiment that verifies that your implementation of `naive` uses no more time than O(nm) to find all occurrences of a given pattern in a text. Remember to explain your choice of test data. What are “best” and “worst” case inputs?
+* **Best case** for the naive algorithm is when the pattern you are trying to match has a first letter that does not match any letter in the string you are matching in. An example would be x="abababab", p="cab"
+* **Worst case** for the naive algorithm would be that every letter in both the pattern and the matching string is the same. So you have to compare the whole pattern each time. An example would be x=b^n , p=b^m
 * An experiment that verifies that your implementations of `lin` use no more time than O(n+m) to find all occurrences of a given pattern in a text. Remember to explain your choice of test data. What are “best” and “worst” case inputs?
+* **Best case** is the same as for the naive you have a missmatch on the first letter on the pattern each time. This will move the letter you compare in x one forward each time looking at each letter in x one time and only the first letter in the pattern. An example would be x="abababab", p="cab".
+* **Worst case** is that both x and the pattern being read the whole way through. If we have a missmatch at some point in the pattern borders will ensure the amount of letters that we have to read again the in the pattern is the amount that we skip in x. This means that the length of x and the length of the pattern will only get read once. An example would be x="aabaabaab", p="aaa"
 
 You can insert pictures here like this:
 
 ```
 ![](path/to/fig)
 ```
+
+In plots 10,50,100 refers to the length of the patterns we are trying to match. ![img](figs/naive.png)
+
+ ![img](figs/kmp.png)
 
 I am not ready to share my own results yet, so I will just show you a fast scooter.
 

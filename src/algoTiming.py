@@ -5,53 +5,88 @@ import test_example
 import parser
 import random as r
 import pandas as pd
+import numpy as np
 
 #TODO less variation of m. NO iterations. more variation of n
 
 
 timer = t.Clock()
-numIterations = 50
+numIterations = 100
+numAvgIterations = 5
 alphabet = "acgt"
 seqlen = 1000000
-patlen = 10000
+patlen = 3000
 
 data = dict()
 
 lseq = []
-lpat = []
-lnaive = []
-lnaive2 = []
-lkmp = []
-lkmp2 = []
-lbmh = []
+lpat1 = []
+lpat2 = []
+lpat3 = []
 
-for patLen in range(1000,patlen+1, 1000):
-    print("New pattern len is :", patLen)
-    for seqLen in range(100000, seqlen+1, 100000):
-        for i in range(numIterations):
-            seq = "".join(r.choices(alphabet, k=seqLen))
-            pat = "".join(r.choices(alphabet, k=patLen)) 
-            naive = timer.timeAlgorithm(n.naive,seq, pat)
-            naive2 = timer.timeAlgorithm(n.naive2,seq, pat)
-            kmp = timer.timeAlgorithm(lin.kmp,seq, pat)
-            kmp2 = timer.timeAlgorithm(lin.kmp2,seq, pat)
-            bmh = timer.timeAlgorithm(lin.bmh,seq, pat)
-            lseq.append(len(seq))
-            lpat.append(len(pat))
-            lnaive.append(naive)
-            lnaive2.append(naive2)
-            lkmp.append(kmp)
-            lkmp2.append(kmp2)
-            lbmh.append(bmh)
+lnaive1 = []
+lnaive2 = []
+lnaive3 = []
+
+lkmp1 = []
+lkmp2 = []
+lkmp3 = []
+
+
+
+for seqLen in range(100000, seqlen+1, 10000):
+    print("Seq len is now:",seqLen)
+    tempNaive1 = []
+    tempKmp1 = []
+    tempNaive2 = []
+    tempKmp2 = []
+    tempNaive3 = []
+    tempKmp3 = []
+    for _ in range(numIterations):
+        seq = "".join(r.choices(alphabet, k=seqLen))
+        pat1 = "".join(r.choices(alphabet, k=10)) 
+        naive1 = timer.getAverageTime(numAvgIterations, n.naive2,seq, pat1)
+        tempNaive1.append(naive1)
+        kmp1 = timer.getAverageTime(numAvgIterations,lin.kmp2,seq, pat1)
+        tempKmp1.append(kmp1)
+    
+        pat2 = "".join(r.choices(alphabet, k=50))
+        naive2 = timer.getAverageTime(numAvgIterations, n.naive2,seq, pat2)
+        tempNaive2.append(naive2)
+        kmp2 = timer.getAverageTime(numAvgIterations, lin.kmp2,seq, pat2)
+        tempKmp2.append(kmp2)
+        
+        pat3 = "".join(r.choices(alphabet, k=100))
+        naive3 = timer.getAverageTime(numAvgIterations, n.naive2,seq, pat3)
+        tempNaive3.append(naive3)
+        kmp3 = timer.getAverageTime(numAvgIterations, lin.kmp2,seq, pat3)
+        tempKmp3.append(kmp3)
+
+    lseq.append(seqLen)
+    #lpat1.append(len(pat1))
+    #lpat2.append(len(pat2))
+    #lpat3.append(len(pat3))
+    
+    lnaive1.append(np.average(tempNaive1))
+    lkmp1.append(np.average(tempKmp1))
+    lnaive2.append(np.average(tempNaive2))
+    lkmp2.append(np.average(tempKmp2))
+    lnaive3.append(np.average(tempNaive3))
+    lkmp3.append(np.average(tempKmp3))
 
 
 data['seq'] = lseq
-data['pat'] = lpat
-data['naive'] = lnaive
+#data['pat1'] = lpat1
+#data['pat2'] = lpat2
+#data['pat3'] = lpat3
+
+data['naive1'] = lnaive1
 data['naive2'] = lnaive2
-data['kmp'] = lkmp
+data['naive3'] = lnaive3
+
+data['kmp1'] = lkmp1
 data['kmp2'] = lkmp2
-data['bmh'] = lbmh
+data['kmp3'] = lkmp3
 
 dataframe = pd.DataFrame(data)
 
