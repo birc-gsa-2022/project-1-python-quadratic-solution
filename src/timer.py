@@ -4,9 +4,9 @@ class Clock:
     def init(self):
         pass
 
-    def timeAlgorithm(self, algorithm, args):
+    def timeAlgorithm(self, algorithm, *args):
         starttime = time.perf_counter()
-        algorithm(args)
+        algorithm(*args)
         endtime = time.perf_counter()
         return endtime-starttime
 

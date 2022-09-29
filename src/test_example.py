@@ -63,3 +63,48 @@ def test_random_same():
         for j in range(50, i+2):
             pat = "".join(r.choices(genAlphabet, k=j))
             compare_res(x, pat, naive.naive, naive.naive2, lin.bmh, lin.kmp, lin.kmp2)
+
+def test_naive2():
+    x = ["aaaaa", "mississippi","", "aaabc","abc","a b c", "abababbababa", "Genome"]
+    p = ["aa", "iss","","bc", "abcd", "b ", "ba", "good grades"]
+    expected = [[0,1,2,3],[1,4],[],[3],[],[2],[1,3,6,8,10], []]
+
+    for i in range(len(x)):
+        res = naive.naive2(x[i],p[i])
+        assert list(res) == expected[i]
+
+def test_naive():
+    x = ["aaaaa", "mississippi","", "aaabc","abc","a b c", "abababbababa", "Genome"]
+    p = ["aa", "iss","","bc", "abcd", "b ", "ba", "good grades"]
+    expected = [[0,1,2,3],[1,4],[],[3],[],[2],[1,3,6,8,10], []]
+
+    for i in range(len(x)):
+        res = naive.naive(x[i],p[i])
+        assert list(res) == expected[i]
+
+def test_kmp():
+    x = ["aaaaa", "mississippi","", "aaabc","abc","a b c", "abababbababa", "Genome", "abxabxabx", "abxabdabx", "bcagjkdasbca"]
+    p = ["aa", "iss","","bc", "abcd", "b ", "ba", "good grades", "abc", "abx", "a"]
+    expected = [[0,1,2,3],[1,4],[],[3],[],[2],[1,3,6,8,10], [], [],[0,6],[2,7,11]]
+
+    for i in range(len(x)):
+        res = lin.kmp(x[i],p[i])
+        assert list(res) == expected[i]
+
+def test_kmp2():
+    x = ["aaaaa", "mississippi","", "aaabc","abc","a b c", "abababbababa", "Genome", "abxabxabx", "abxabdabx", "bcagjkdasbca"]
+    p = ["aa", "iss","","bc", "abcd", "b ", "ba", "good grades", "abc", "abx", "a"]
+    expected = [[0,1,2,3],[1,4],[],[3],[],[2],[1,3,6,8,10], [], [],[0,6],[2,7,11]]
+
+    for i in range(len(x)):
+        res = lin.kmp2(x[i],p[i])
+        assert list(res) == expected[i]
+
+def test_bmh():
+    x = ["aaaaa", "mississippi","", "aaabc","abc","a b c", "abababbababa", "Genome", "abxabxabx", "abxabdabx", "bcagjkdasbca"]
+    p = ["aa", "iss","","bc", "abcd", "b ", "ba", "good grades", "abc", "abx", "a"]
+    expected = [[0,1,2,3],[1,4],[],[3],[],[2],[1,3,6,8,10], [], [],[0,6],[2,7,11]]
+
+    for i in range(len(x)):
+        res = lin.bmh(x[i],p[i])
+        assert list(res) == expected[i]
