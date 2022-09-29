@@ -16,7 +16,7 @@ def main():
     fastq = p.parseFastq(args.reads)
     for (fastaName, fastaSeq) in fasta:
         for (name,seq) in fastq:
-            for i in bmh(fastaSeq, seq):
+            for i in kmp(fastaSeq, seq):
                 print(name, fastaName, i+1, f'{len(seq)}M', seq, sep="\t")
 
 
@@ -44,7 +44,10 @@ def strict_border_array(x: str) -> list[int]:
     return ba
 
 def kmp(x, p):
-    ba = strict_border_array(p)
+    if not x or not p:
+        return 
+    ba = border_array(p)
+    bax = strict_border_array(p)
     m = len(p)
     n = len(x)
     i = 0
@@ -52,18 +55,19 @@ def kmp(x, p):
     while j < n:
 
         if x[j] == p[i]:
-            if i==m-1:
-                if i==0:
-                    j += 1
+            if m == 1:
+                yield j
+                j += 1
+            elif i==m-1:
+                yield j-i
                 i = ba[i-1]
-                yield j-m
             else:
                 j += 1
                 i += 1
         elif i==0:
             j += 1
         else:
-            i = ba[i-1]
+            i = bax[i-1]
             
 def make_jump_table(p):
     jump_table = dict()
@@ -74,6 +78,9 @@ def make_jump_table(p):
     return jump_table
 
 def bmh(x, p):
+    if not x or not p:
+        return 
+    
     n = len(x)
     m = len(p)
     jump_table = make_jump_table(p)

@@ -21,6 +21,8 @@ def main():
 
 
 def naive(x, p):
+    if not x or not p:
+        return
     upperIndex = len(x)-len(p)+1
     for i in range(upperIndex):
         for j, patternchar in enumerate(p):
@@ -30,6 +32,8 @@ def naive(x, p):
             yield i
 
 def naive2(x,p):
+    if not x or not p:
+        return
     m = len(p)
     upperIndex = len(x)-m+1
     for i in range(upperIndex):

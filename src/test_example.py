@@ -27,24 +27,30 @@ def makeFile(string, fileName="test"):
     with open(fileName, "a") as f:
         f.write(string+"\n")
 
-makeFile(fastaGenerator(), fileName="test.fa")
-makeFile(fastqGenerator(seqlen=3), fileName="test.fq")
+#makeFile(fastaGenerator(), fileName="test.fa")
+#makeFile(fastqGenerator(seqlen=3), fileName="test.fq")
 
-string= "".join(r.choices(genAlphabet, k=1000))
-pat = "".join(r.choices(genAlphabet, k=1))
-nai = [n for n in naive.naive2(string, pat)]
-li = [l for l in lin.kmp(string, pat)]
+def compare_res(x, p, *algorithms):
+    res = [list(a(x,p)) for a in algorithms]
+    for i in range(1, len(res)):
+        assert len(res[0]) == len(res[i]), f"Not same len for {algorithms[0].__name__} and {algorithms[i].__name__} with input {x} and {p}"
+    #for i in range(1, len(res)):
+    #    assert res[0] == res[i], f"Not same output for {algorithms[0].__name__()} and {algorithms[i].__name__()} with input {x} and {p}"
 
-print("Length nai : " + str(len(nai)))
-print("Length li : " + str(len(li)))
+def test_defined():
+    x = "aaaaa"
+    p = "aa"
+    compare_res(x, p, naive.naive2, lin.bmh, lin.kmp)
 
-assert len(nai) == len(li)
-
-for i in range(len(nai)):
-    assert nai[i] == li[i]
-
+    x = "gtccccacatcct"
+    p = "ccc"
+    compare_res(x, p, naive.naive2, lin.bmh, lin.kmp)
 
 
-
-def test_1984():
-    assert 2 + 2 == 4
+def test_random_same():
+    setSeed()
+    for i in range(500):
+        x= "".join(r.choices(genAlphabet, k=i))
+        for j in range(50, i+2):
+            pat = "".join(r.choices(genAlphabet, k=j))
+            compare_res(x, pat, naive.naive2, lin.bmh, lin.kmp)
