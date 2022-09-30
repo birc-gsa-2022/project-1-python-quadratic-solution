@@ -84,7 +84,7 @@ Once you have implemented the tools, fill out the report below.
 
 ### Insights you may have had while implementing and comparing the algorithms.
 
-There are many ways to archive the same thing but not every method is equally elegant. 
+There are many ways to archive the same thing but not every method is equally elegant.
 
 ### Problems encountered if any.
 
@@ -95,7 +95,6 @@ There are many ways to archive the same thing but not every method is equally el
 
 We have made testing with some examples were we knew the correct answer and checked that the algorithm gave the same answer as we expected.
 
-
 After being confident in that the naive algorithm as correct we also ran alot of examples with randomly generated data and compared the output given by different algorithms to make sure they all gave the same answer to the same input.
 
 ### Experiments validating the running time.
@@ -103,6 +102,7 @@ After being confident in that the naive algorithm as correct we also ran alot of
 For this section, you should address the following:
 
 * An experiment that verifies that your implementation of `naive` uses no more time than O(nm) to find all occurrences of a given pattern in a text. Remember to explain your choice of test data. What are “best” and “worst” case inputs?
+* We chose to use random data for testing the run-time. Since it is the best approximation of real data. This of course will most likely not give a worst case or best case example to run on. But running a lot of iterations it should all average out. For each seqence length we run 100 seqences of that length with a pattern length of m=100, 1000, 10000 for each of the algorithms. For every unique seqence we take the average time of running the algorithm with the same input 5 times.
 * **Best case** for the naive algorithm is when the pattern you are trying to match has a first letter that does not match any letter in the string you are matching in. An example would be x="abababab", p="cab"
 * **Worst case** for the naive algorithm would be that every letter in both the pattern and the matching string is the same. So you have to compare the whole pattern each time. An example would be x=b^n , p=b^m
 * An experiment that verifies that your implementations of `lin` use no more time than O(n+m) to find all occurrences of a given pattern in a text. Remember to explain your choice of test data. What are “best” and “worst” case inputs?
@@ -115,7 +115,7 @@ You can insert pictures here like this:
 ![](path/to/fig)
 ```
 
-In plots 10,50,100 refers to the length of the patterns we are trying to match. ![img](figs/naive.png)
+ ![img](figs/naive.png)
 
  ![img](figs/kmp.png)
 

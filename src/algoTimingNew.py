@@ -1,16 +1,14 @@
 import timer as t
 import naive as n
 import lin
-import random as r
-import pandas as pd
 import numpy as np
+import pandas as pd
 
 timer = t.Clock()
-numIterations = 100
+
+iterations = 100
+maxSeqLen = 500000
 numAvgIterations = 5
-alphabet = "acgt"
-seqlen = 1000000
-patlen = 3000
 
 data = dict()
 
@@ -27,42 +25,38 @@ lkmp1 = []
 lkmp2 = []
 lkmp3 = []
 
-#We generate a new seqeunce to look through before a run of an algorithm 
-#This is done to minizime the amout knowlegde python has of the seqence before running each algorithm  
-
-for seqLen in range(100000, seqlen+1, 10000):
-    print("Seq len is now:",seqLen)
+for seqLen in range(10000, maxSeqLen+1, 1000):
+    print("seqLen is now:", seqLen)
     tempNaive1 = []
     tempKmp1 = []
     tempNaive2 = []
     tempKmp2 = []
     tempNaive3 = []
     tempKmp3 = []
-    for _ in range(numIterations):
-        seq = "".join(r.choices(alphabet, k=seqLen))
-        pat1 = "".join(r.choices(alphabet, k=100)) 
+    for _ in range(iterations):
+        seq = "b" * seqLen
+        pat1 = "b" * 100
+
         naive1 = timer.getAverageTime(numAvgIterations, n.naive2,seq, pat1)
         tempNaive1.append(naive1)
-        seq = "".join(r.choices(alphabet, k=seqLen))
+
         kmp1 = timer.getAverageTime(numAvgIterations,lin.kmp2,seq, pat1)
         tempKmp1.append(kmp1)
-    
-        pat2 = "".join(r.choices(alphabet, k=1000))
-        seq = "".join(r.choices(alphabet, k=seqLen))
+
+        pat2 = "b" * 1000
         naive2 = timer.getAverageTime(numAvgIterations, n.naive2,seq, pat2)
         tempNaive2.append(naive2)
-        seq = "".join(r.choices(alphabet, k=seqLen))
+
         kmp2 = timer.getAverageTime(numAvgIterations, lin.kmp2,seq, pat2)
         tempKmp2.append(kmp2)
-        
-        seq = "".join(r.choices(alphabet, k=seqLen))
-        pat3 = "".join(r.choices(alphabet, k=10000))
+
+        pat3 = "b" * 10000
         naive3 = timer.getAverageTime(numAvgIterations, n.naive2,seq, pat3)
         tempNaive3.append(naive3)
-        seq = "".join(r.choices(alphabet, k=seqLen))
+
         kmp3 = timer.getAverageTime(numAvgIterations, lin.kmp2,seq, pat3)
         tempKmp3.append(kmp3)
-
+    
     lseq.append(seqLen)
     #lpat1.append(len(pat1))
     #lpat2.append(len(pat2))
@@ -74,7 +68,6 @@ for seqLen in range(100000, seqlen+1, 10000):
     lkmp2.append(np.average(tempKmp2))
     lnaive3.append(np.average(tempNaive3))
     lkmp3.append(np.average(tempKmp3))
-
 
 data['seq'] = lseq
 #data['pat1'] = lpat1
@@ -91,4 +84,4 @@ data['kmp3'] = lkmp3
 
 dataframe = pd.DataFrame(data)
 
-dataframe.to_csv("data3.csv", index=False)
+dataframe.to_csv("data10.csv", index=False)
